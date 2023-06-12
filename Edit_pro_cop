@@ -1,0 +1,629 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yourspecially/src/constants/api_config.dart';
+import 'package:yourspecially/src/constants/app_colors.dart';
+import 'package:yourspecially/src/routing/routing_config.dart';
+import 'package:http/http.dart' as http;
+
+import '../../utils/toast_msg.dart';
+
+class EditPersonalDetailsScreen extends StatefulWidget {
+  const EditPersonalDetailsScreen({super.key});
+
+  @override
+  State<EditPersonalDetailsScreen> createState() =>
+      _EditPersonalDetailsScreenState();
+}
+
+class _EditPersonalDetailsScreenState extends State<EditPersonalDetailsScreen> {
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _phoneNoController;
+  late TextEditingController _addressPart1;
+  late TextEditingController _addressPart2;
+  late TextEditingController _zipCodeController;
+  var jwtToken1;
+  var _isLoading = false;
+  int? _selectedIndex;
+  var labelName;
+  var _selectedItemList = [];
+  final _isSelected = false;
+  final _items = [
+    {
+      'id': '1',
+      'index': 0,
+      'color': Colors.white,
+      'is_selected': false,
+      'text': 'Home',
+    },
+    {
+      'id': '2',
+      'index': 1,
+      'color': Colors.white,
+      'is_selected': false,
+      'text': 'Work',
+    },
+    {
+      'id': '3',
+      'index': 2,
+      'color': Colors.white,
+      'is_selected': false,
+      'text': 'Friends and family',
+    },
+    {
+      'id': '4',
+      'index': 3,
+      'color': Colors.white,
+      'is_selected': false,
+      'text': 'Other',
+    },
+  ];
+
+  String _userName = '';
+  String _userPhoneno = '';
+  String _userEmail = '';
+  var _userData;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      getUserData();
+      _firstNameController = TextEditingController();
+      _lastNameController = TextEditingController();
+      _phoneNoController = TextEditingController();
+      _addressPart1 = TextEditingController();
+      _addressPart2 = TextEditingController();
+      _zipCodeController = TextEditingController();
+    });
+  }
+
+  Future getUserData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      String? stringValue = prefs.getString('userData');
+      _userData = jsonDecode(stringValue!)["data"];
+      print("_userData???" + _userData.toString());
+      jwtToken1 = jsonDecode(stringValue!)['JWT'];
+      _userPhoneno = _userData["phone"].toString();
+      _userName = _userData["name"].toString();
+      _userEmail = _userData["email"].toString();
+      _phoneNoController.text = _userPhoneno;
+      _firstNameController.text = _userName;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Theme(
+        data: ThemeData(primaryIconTheme: IconThemeData(color: Colors.red)),
+        child: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) => [
+            SliverAppBar(
+              title: Text(
+                'Edit Personal Details',
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16.sp,
+                ),
+              ),
+              elevation: 0,
+              centerTitle: true,
+              floating: true,
+              pinned: false,
+              snap: true,
+              backgroundColor: Color(0xff52A0FE),
+            ),
+          ],
+          body: Material(
+            color: Colors.white,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: <double>[
+                    0.25,
+                    0.65,
+                    0.75,
+                  ],
+                  colors: <Color>[
+                    colorBackgroundGradientStart,
+                    colorBackgroundGradientEnd,
+                    Colors.white,
+                  ],
+                  tileMode: TileMode.clamp,
+                ),
+              ),
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: ListView(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30.0),
+                          topRight: Radius.circular(30.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 35.0.w, vertical: 30.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextFormField(
+                              controller: _firstNameController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xffAAAAAA),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: 'First Name',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffAAAAAA),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            TextFormField(
+                              controller: _lastNameController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xffAAAAAA),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: 'Last Name',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffAAAAAA),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            TextFormField(
+                              controller: _phoneNoController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xffAAAAAA),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: 'Phone no',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffAAAAAA),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            TextFormField(
+                              //controller: _eEmaillController,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0xffEDEDED),
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Colors.green,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: _userEmail,
+                                  hintStyle: TextStyle(
+                                    color: Color(0xff000000),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            TextFormField(
+                              controller: _addressPart1,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xffAAAAAA),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: 'house /flat/block no.',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffAAAAAA),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            TextFormField(
+                              controller: _addressPart2,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xffAAAAAA),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: 'Apartment/road/area',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffAAAAAA),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            TextFormField(
+                              controller: _zipCodeController,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    top: 13.0,
+                                    bottom: 13.0,
+                                    left: 20.0,
+                                    right: 20.0,
+                                  ),
+                                  border: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color(0xffAAAAAA),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: colorPrimarySeed,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                        50.0,
+                                      ),
+                                    ),
+                                  ),
+                                  hintText: 'Zipcode',
+                                  hintStyle: TextStyle(
+                                    color: Color(0xffAAAAAA),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                  )),
+                            ),
+                            SizedBox(
+                              height: 23.h,
+                            ),
+                            const Text(
+                              'Save As',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xffAAAAAA),
+                              ),
+                            ),
+                            SizedBox(height: 12.h),
+                            Wrap(
+                              runSpacing: 15.0,
+                              spacing: 15.0,
+                              children: _items
+                                  .map((item) => ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          elevation: 0.0,
+                                          onPrimary:
+                                              (item['index'] == _selectedIndex)
+                                                  ? Colors.white
+                                                  : colorText,
+                                          primary:
+                                              (item['index'] == _selectedIndex)
+                                                  ? colorSecondarySeed
+                                                  : Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              side: (item['index'] ==
+                                                      _selectedIndex)
+                                                  ? const BorderSide(
+                                                      color: Colors.white)
+                                                  : BorderSide(
+                                                      color: Colors.grey[350]
+                                                          as Color))),
+                                      onPressed: () {
+                                        setState(() {
+                                          _selectedIndex = _items.indexOf(item);
+                                          print(_selectedIndex);
+                                          if (_selectedIndex == 0) {
+                                            labelName = 'Home';
+                                            updateData();
+                                            print(labelName);
+                                          } else if (_selectedIndex == 1) {
+                                            labelName = 'Work';
+                                            print(labelName);
+                                          } else if (_selectedIndex == 2) {
+                                            labelName = 'Friends and family';
+                                            print(labelName);
+                                          } else if (_selectedIndex == 3) {
+                                            labelName = 'Other';
+                                            print(labelName);
+                                          }
+                                        });
+                                        // _selectedItemList.add(item['text']);
+                                        // setState(() {
+                                        //   item['is_selected'] =
+                                        //       item['is_selected'] == true
+                                        //           ? false
+                                        //           : true;
+                                        // });
+                                        // if (item['is_selected'] == true) {
+                                        //   _selectedItemList.add(item['text']);
+                                        // } else {
+                                        //   _selectedItemList
+                                        //       .remove(item['text']);
+                                        // }
+                                        // if (_selectedItemList.length >= 5) {
+                                        //   setState(() {
+                                        //     _isSelected = true;
+                                        //   });
+                                        // }
+                                        // if (_selectedItemList.length < 5) {
+                                        //   setState(() {
+                                        //     _isSelected = false;
+                                        //   });
+                                        // }
+                                      },
+                                      child: Text(item['text'] as String)))
+                                  .toList(),
+                            ),
+                            SizedBox(
+                              height: 250.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      bottomSheet: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 35.0.w, vertical: 30.w),
+        child: ElevatedButton(
+          onPressed: () {
+            _isLoading
+                ? null
+                : userUpdate(
+                    context,
+                    _firstNameController.text,
+                    _lastNameController.text,
+                    _phoneNoController.text,
+                    _addressPart1.text,
+                    _addressPart2.text,
+                    _zipCodeController.text);
+          },
+          style: ElevatedButton.styleFrom(
+            elevation: 0.0,
+            foregroundColor: const Color(0xffFFFFFF),
+            backgroundColor: const Color(0xffFFB93E),
+            minimumSize: const Size(double.infinity, 55.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(40.0)),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          child: _isLoading
+              ? Container(
+                  width: 24,
+                  height: 24,
+                  padding: const EdgeInsets.all(2.0),
+                  child: const CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 3,
+                  ),
+                )
+              : const Text('UPDATE'),
+        ),
+      ),
+    );
+  }
+
+  void userUpdate(
+      BuildContext context,
+      String stFirstName,
+      String stLastName,
+      String stPhoneNo,
+      String stAddresspart1,
+      String stAddresspart2,
+      String stZipCode) async {
+    Map data = {
+      'label': labelName,
+      'name': '$stFirstName$stLastName',
+      'phone': stPhoneNo,
+      'block_no': stAddresspart1,
+      'area': stAddresspart2,
+      'zipcode': stZipCode
+    };
+    http.Response response = await http
+        .post(Uri.parse(BaseApi.getUpdateAddress), body: data, headers: {
+      'Authorization': 'Bearer ${jwtToken1.toString()}',
+    });
+    var jsonResponse = json.decode(response.body);
+    print(json.decode(response.body));
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.setString('userData', response.body);
+    if (kDebugMode) {
+      print(jsonResponse);
+    }
+    var resMsg = jsonResponse['message'];
+    if (response.statusCode == 201) {
+      showToastMessage(resMsg);
+      Navigator.pushNamed(context, personalDetailsScreen);
+    } else {
+      showToastMessage("Something error!");
+    }
+  }
+
+  void updateData() {
+    setState(() {});
+  }
+}
