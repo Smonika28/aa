@@ -1,0 +1,320 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:group_button/group_button.dart';
+class EditPersonalDetails extends StatefulWidget {
+  const EditPersonalDetails({super.key});
+
+  @override
+  State<EditPersonalDetails> createState() => _EditPersonalDetails();
+}
+
+class _EditPersonalDetails extends State<EditPersonalDetails> {
+  @override
+  Widget build(BuildContext context) {
+    final _screenHeight = MediaQuery.of(context).size.height -
+        kToolbarHeight -
+        MediaQuery.of(context).padding.top;
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: const Text(
+          "Edit Personal Details",
+          style: TextStyle(color: Colors.black),
+        ),
+        actions: [
+
+        ],
+        leading: GestureDetector(
+          onTap: () {},
+          child: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+        ),
+      ),
+
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+
+            Container(
+
+              margin: const EdgeInsets.only(bottom: 10, top: 10),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 211, 209, 209).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'Adam',
+                        hintStyle: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'Last Name',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'Mobile Number',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'smith02@gmail.com',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'House/Flat/Block No.',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'Apartment/Road/Area',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+
+                  SizedBox(
+                    height: 15,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.only(
+                          top: 13.0,
+                          bottom: 13.0,
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffAAAAAA),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              50.0,
+                            ),
+                          ),
+                        ),
+                        hintText: 'Zipcode',
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                        )),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              margin: const EdgeInsets.only(bottom: 10, top: 10),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 211, 209, 209).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+               Text('Save As', style: TextStyle(
+                 color: Colors.black,
+                 fontWeight: FontWeight.w500,
+                 fontSize: 16,
+               ),
+               ),
+                  const GroupButton(
+                    //
+                    isRadio: false,
+                     // onSelected: () {},
+                    buttons: ["Home", "Work", "Friends & Families", "Others"],
+                    // selectedButtons: ["Home", "Work"],
+                    // selectedTextStyle: TextStyle(
+                    //   fontWeight: FontWeight.w600,
+                    //   fontSize: 16,
+                    //   color: Colors.red,
+                    // ),
+                    // unselectedTextStyle: TextStyle(
+                    //   fontWeight: FontWeight.w600,
+                    //   fontSize: 14,
+                    //   color: Colors.grey[600],
+                    // ),
+
+
+                  ),
+                  new RichText(
+                    text: new TextSpan(children: [
+                      WidgetSpan(
+                        child: new Icon(Icons.home,size:16, color: Colors.black45),
+                      ),
+                      TextSpan(text: 'Home', style: TextStyle(color: Colors.black)),
+                    ]),
+                  ),
+
+                ],
+              ),
+            ),
+
+
+          ],
+        ),
+      ),
+    );
+  }
+}
