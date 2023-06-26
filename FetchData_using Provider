@@ -1,0 +1,92 @@
+How to fetch data in flutter:---------
+
+Step 1: Add dependencies
+Make sure you have the provider package added as a dependency in your pubspec.yaml file.
+
+
+
+Step 2: Create a model class
+Create a model class to represent the data you will receive from the API. This class will typically have properties that match the JSON response structure.
+
+
+
+Step 3: Create a provider class
+Create a provider class that will handle the API calls and manage the state of the data. This class will extend the ChangeNotifier class from the provider package.
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+class PostProvider with ChangeNotifier {
+  List<Post> _posts = [];
+
+  List<Post> get posts => _posts;
+
+  Future<void> fetchPosts() async {
+    final response = await http.get(Uri.parse('https://api.example.com/posts'));
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      _posts = responseData.map((json) => Post.fromJson(json)).toList();
+      notifyListeners();
+    } else {
+      throw Exception('Failed to fetch posts');
+    }
+  }
+}
+
+
+
+Step 4: Wrap your app with a ChangeNotifierProvider
+Wrap your app with a ChangeNotifierProvider widget from the provider package. This widget will make the provider class accessible to all the widgets below it in the widget tree.
+
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => PostProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'API Demo',
+      home: HomePage(),
+    );
+  }
+}
+
+
+Step 5: Consume the provider data
+In your widgets, you can access the provider data using the Provider.of<T>(context) method. In this case, we can access the PostProvider and call the fetchPosts() method to retrieve the data.
+
+
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final postProvider = Provider.of<PostProvider>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('API Demo'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            postProvider.fetchPosts();
+          },
+          child: Text('Fetch Posts'),
+        ),
+      ),
+    );
+  }
+}
